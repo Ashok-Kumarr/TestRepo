@@ -1,0 +1,5 @@
+Public Class AccountHeaderCtrl{
+ Public List<Account> getAccountList(){
+  Return [Select ID,Name from Account Limit 50];
+ }
+}
