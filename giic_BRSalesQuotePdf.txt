@@ -1,0 +1,256 @@
+<apex:page standardController="gii__SalesQuote__c" language="{!sUserLocale}" extensions="giic_BRSalesQuotePdf" applyBodyTag="false" cache="true" applyHtmlTag="false" showHeader="false" >
+    <head>
+        <style type="text/css" media="print">
+            
+            @page {size: Portrait;
+            padding-top: 50px;
+            @top-center {
+            content: element(header);
+            }
+            @bottom-left {
+            content: element(footer);
+            }
+            }
+            div.header {
+            padding: 10px;
+            position: running(header);
+            }
+            div.footer {
+            
+            display: block;
+            padding: 5px;
+            position: running(footer);
+            }
+            .pagenumber:before {
+            content: counter(page);
+            }
+            .pagecount:before {
+            content: counter(pages);
+            }
+            
+            .header img{margin-left:0px; width:150px; height:50px;}
+            .maintable {width:100%;border-collapse: collapse;}
+            .maintable td{vertical-align: text-top; min-width:295px; padding:0px 10px 0px 0px; margin:0px; }
+            .datatable{width:100%;border-collapse: collapse;}
+            .datatable th{padding:4px;font-size:90%;}
+            .datatable1{width:100%;border-collapse: collapse;}      
+            .datatable1 td{border:1px solid red; width:12.5%}
+            .rightalign{text-align:right;}
+            .totalamnt span{display:inline-block; float:right;}
+            tr.border_top td{border-top:1pt solid #000;}
+        </style>
+    </head>
+    <div class="header">
+        <table>
+            <tr>
+                <td><apex:image url="{!$Resource.giic_BRSyngentaLogo}"/></td>
+                <td style="width:400px">
+                    <center>
+                        <h2>
+                            <apex:outputText rendered="{!contains(SalesQuote.giic_BRStatus__c,'Draft')}" value="{!$Label.giic_BRQuotePDFQuotation}"/>
+                            <apex:outputText rendered="{!OR(contains(SalesQuote.giic_BRStatus__c,'Ready for Order Creation'),contains(SalesQuote.giic_BRStatus__c,'Confirmed'))}" value="{!$Label.giic_BRQuotePDFQuotationRFOCREATE}"/>
+                        </h2>
+                    </center>
+                </td>           
+            </tr>
+        </table>
+        <div style="clear: left; width:100%;">
+            <div style="float:left; "></div>
+            <div style="float:left;margin-left:140px;margin-top:0px;"></div>
+        </div>  
+    </div>
+    <div class="footer">
+        <div>{!$Label.giic_BRQuotePDFPageNumber} <span class="pagenumber"/> {!$Label.giic_BRQuoteLabelForOf} <span class="pagecount"/> <span style="float:right;"> {!$Label.giic_BRQuotePDFQuotationNumber} {!SalesQuote.name} </span> </div>
+    </div>
+    <div class="content" >
+        <div style="clear: left;">
+            <div>
+                <table class="maintable">
+                    <tr>
+                        <td>
+                            {!$Label.giic_BRQuotePDFQuotationNumber} {!SalesQuote.name}<br/>
+                            {!$Label.giic_BRQuotePDFQuotationType} {!SalesQuote.giic_QuoteTypeValue__c}<br/>
+                            {!$Label.giic_BRQuotePDFDate}&nbsp;
+                            <apex:outputText value="{0,date,dd/MM/yyyy}">
+                                <apex:param value="{!SalesQuote.gii__QuoteDate__c}" />
+                            </apex:outputText>
+                            <br/>
+                            {!$Label.giic_BRQuoteValidityDate}&nbsp;
+                            <apex:outputText value="{0,date,dd/MM/yyyy}">
+                                <apex:param value="{!SalesQuote.giic_ExpirationDate__c}" />
+                            </apex:outputText>
+                            <br/>
+                            {!$Label.giic_BRQuotePDFQuotationName} {!SalesQuote.giic_QuoteName__c} <br/>
+                            
+                        </td>
+                        <td>
+                            {!$Label.giic_BRQuotePDFHQ}<br/>
+                            {!$Label.giic_BRQuotePDFHQ2}<br/>
+                            {!$Label.giic_BRQuotePDFCNPJ}<br/>
+                            {!$Label.giic_BRQuotePDFIE }<br/>
+                            {!$Label.giic_BRQuotePDFEmail}
+                        </td>
+                        <td >
+                            {!$Label.giic_BRQuotePDFAdministration}<br/>
+                            {!$Label.giic_BRQuotePDFAdmNum}
+                        </td>
+                    </tr>
+                </table>  
+            </div>
+            <br/>
+            <div style="float:left; width:100%;">
+                <div style="background-color:#DCDCDC;"><p  style="font-weight:bold;margin-top:0px;margin-bottom:0px"> {!$Label.giic_BRQuotePDFShipTo} {!SalesQuote.giic_ShipTo__c}</p></div>
+                {!SalesQuote.giic_ShipTo_Desc__c}<br/>
+                {!SalesQuote.gii__ShipToStreetTextArea__c}<br/>
+                {!SalesQuote.gii__ShipToCity__c} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                {!SalesQuote.gii__ShipToStateProvince__c} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                {!SalesQuote.gii__ShipToCountry__c}  {!SalesQuote.gii__ShipToZipPostalCode__c}<br/>
+                <apex:outputText value="CNPJ: " rendered="{!SalesQuote.gii__Account__r.Tax_ID_1__c != null && SalesQuote.gii__Account__r.Tax_ID_3__c == null}"/>
+                <apex:outputText value="CPF: " rendered="{! SalesQuote.gii__Account__r.Tax_ID_1__c != null && SalesQuote.gii__Account__r.Tax_ID_3__c != null}"/>
+                <apex:outputText value="{!sTax_ID_1}"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                IE:&nbsp;{!SalesQuote.gii__Account__r.Tax_ID_2__c}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                Tel:&nbsp;{!SalesQuote.gii__Account__r.Phone} <br/>
+            </div>
+        </div> 
+        
+        <div style="clear: left;">
+            <br/>
+            <div style="float:left;width:49%; ">
+                <div style="padding-left:5px;padding-top:5px;border: 2px solid black;margin-top:0px;height:150px;">
+                    <div  style="background-color:#DCDCDC;"><p  style="font-weight:bold;margin-top:0px;"> {!$Label.giic_BRQuotePDFSalesOfficeInformation} </p></div>
+                    {!$Label.giic_BRQuotePDFSalesOffice}   &nbsp;{!SalesQuote.giic_SalesOffice_Desc__c}<br/>
+                    {!$Label.giic_BRQuotePDFSalesDistrict} &nbsp;{!SalesQuote.giic_SalesDistrict_Desc__c}<br/>
+                    {!$Label.giic_BRQuotePDFRTVName}       &nbsp;{!SalesQuote.owner.name}<br/>
+                </div>
+            </div>
+            <div style="float:right;margin-left:2%;width:49%; ">
+                <div style="padding-left:5px;padding-top:5px;border: 2px solid black;margin-top:0px;height:150px;">
+                    <div style="background-color:#DCDCDC;"><p  style="font-weight:bold;margin-top:0px;">{!$Label.giic_BRQuotePDFPaymentDetails}</p></div>
+                    {!$Label.giic_BRQuotePDFSalesmodality} &nbsp; {!SalesQuote.Sales_Modality_Value__c}<br/>
+                    {!$Label.giic_BRQuotePDFPaymentTerms}  &nbsp; {!SalesQuote.giic_Payment_Terms_Value__c}<br/>
+                    {!$Label.giic_BRQuotePDFInterest} &nbsp; <apex:outputField value="{!SalesQuote.giic_InterestRate__c}"/> %<br/> 
+                    {!$Label.giic_BRQuotePDFGraceperiod} &nbsp;
+                    <apex:outputText value="{0,date,dd/MM/yyyy}">
+                        <apex:param value="{!SalesQuote.giic_GracePeriod__c}" />
+                    </apex:outputText> <br/>
+                    {!$Label.giic_BRQuotePDFIncoterms}&nbsp;{!SalesQuote.giic_Incoterms_Value__c}<br/>
+                </div> 
+            </div>
+        </div>
+        
+        <div style="clear: left; height:15px; margin-top:100px;">                                
+            <div  style=" padding-top:20px;" >
+                
+                    <table class="datatable">
+                        <tr style="background-color:#DCDCDC;height:50px;padding:50px;">
+                            <th>{!$Label.giic_BRQuotePDFSKUCODE}</th>
+                            <th>{!$Label.giic_BRQuotePDFDescription}</th>
+                            <th class="rightalign">{!$Label.giic_BRQuotePDFQuantity}</th>
+                            <th class="rightalign">{!$Label.giic_BRQuotePDFUOM}</th>
+                            <th class="rightalign">{!$Label.giic_BRQuotePDFUnitPrice}</th>
+                            <th class="rightalign">{!$Label.giic_BRQuotePDFAmount}</th>
+                            <th class="rightalign">{!$Label.giic_BRQuotePDFReqDelivDate}</th>
+                            <th class="rightalign">{!$Label.giic_BRQuotePDFLocal}</th>
+                        </tr>
+                        <tbody>
+                            <apex:repeat var="SalesQuoteLine" value="{!AllSalesQuoteLine}">
+                                <tr >
+                                    <td style="font-size:90%;text-align:left;">{!SalesQuoteLine.WSalesQuoteLineObj.gii__Product__r.giic_SKU__c}</td>
+                                    <td style="font-size:90%;text-align:left;">{!SalesQuoteLine.WSalesQuoteLineObj.giic_Product_Local_Description__c}</td>
+                                    <td class="rightalign">
+                                        <apex:outputField value="{!SalesQuoteLine.WSalesQuoteLineObj.gii__OrderQuantity__c}"/>
+                                    </td>
+                                    <td class="rightalign">{!SalesQuoteLine.WSalesQuoteLineObj.gii__StockUM__c}</td>
+                                    <td class="rightalign">
+                                        {!SalesQuote.CurrencyIsoCode}&nbsp;
+                                        <apex:outputField value="{!SalesQuoteLine.WSalesQuoteLineObj.giic_BRUnitPricePDF__c}"/>
+                                        <!--&nbsp;{!SalesQuote.CurrencyIsoCode}
+
+<apex:outputField value="{!SalesQuoteLine.WSalesQuoteLineObj.giic_BR_UnitPrice__c}" lang="{!sUserLanguage}"/>
+-->	
+                                    </td>
+                                    <td class="rightalign">
+                                        {!SalesQuote.CurrencyIsoCode}&nbsp;
+                                        <apex:outputField value="{!SalesQuoteLine.WSalesQuoteLineObj.giic_BRNetAmountPdf__c}"/>
+                                        <!--
+<apex:outputText value="{!currencyFormatCustom}">
+
+
+<apex:param value="{!SalesQuoteLine.WSalesQuoteLineObj.gii__NetAmount__c}"/>
+
+
+</apex:outputText>
+&nbsp;{!SalesQuote.CurrencyIsoCode} 
+
+<apex:outputText value="{0, Number,#.##.##0.00}" rendered="{!IF(contains(SalesQuote.CurrencyIsoCode, 'USD'), true, false)}">
+{!SalesQuote.CurrencyIsoCode}&nbsp;
+<apex:param value="{!SalesQuoteLine.WSalesQuoteLineObj.gii__ProductAmount__c}"/>
+</apex:outputText>
+-->
+                                        <!--<apex:outputField value="{!SalesQuoteLine.WSalesQuoteLineObj.gii__ProductAmount__c}" lang="{!sUserLanguage}"/>-->
+                                    </td>
+                                    <td class="rightalign">
+                                        <apex:outputText value="{0,date,dd/MM/yyyy}">
+                                            <apex:param value="{!SalesQuoteLine.WSalesQuoteLineObj.gii__RequiredDate__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                    <td style="font-size:90%;text-align:center;">{!SalesQuoteLine.intLocal}</td>
+                                </tr>
+                            </apex:repeat>
+                            <tr class="border_top">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td  colspan="2" class="rightalign">
+                                    {!SalesQuote.CurrencyIsoCode}&nbsp;
+                                    <apex:outputField value="{!SalesQuote.giic_BRNetAmountPdf__c}"/>
+                                    <!--
+<apex:outputText value="{!currencyFormatCustom}">
+{!SalesQuote.CurrencyIsoCode}&nbsp;
+<apex:param value="{!SalesQuote.gii__NetAmount__c}"/>
+</apex:outputText>
+-->
+                                </td>
+                                <td colspan="2">
+                                    &nbsp; <b>{!$Label.giic_BRQuotePDFTotalAmount}</b></td>
+                            </tr>
+                        </tbody>
+                    </table> 
+                
+                <p style="float:right;margin-right:155px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+                </p> 
+            </div>
+        </div>
+        
+        <div style="clear: left;float:left;width:100%;" >
+            <div style="background-color:#DCDCDC;width:100%;font-weight:bold;"><center>{!$Label.giic_BRQuotePDFAdditionalinfo}</center></div>
+            <P>{!$Label.giic_BRQuotePDFLocal} :</P>
+            <apex:repeat value="{!mapWarehouseDetails}" var="key" >
+                ({!key}): &nbsp; <apex:outputText value="{!mapWarehouseDetails[key]}" />
+                <br/>
+            </apex:repeat> 
+            <br/>
+            <hr style="border: 1px dashed black;" />
+        </div>
+        <div style="clear: left;float:left;">
+            <!--
+<center><p><b>{!$Label.giic_BRQuoteCommitment}</b></p></center>
+<p>
+{!$Label.giic_BRSQPDFCOMMITMENT}
+</p>
+<p>
+{!$Label.giic_BRSQPDFCOMMITMENT2ND}
+</p>
+-->
+            <!--<center><p><b>{!$Label.giic_TermsAndConditions}</b></p></center>
+<p>
+{!$Label.giic_TermsAndConditions1ST}
+</p>-->
+            <p style="width:100%;text-align:center;"><b>{!$Label.giic_TermsAndConditions}</b><br/><br/>{!$Label.giic_TermsAndConditions1ST}</p>
+            <br/><br/>
+            <p style="float:right;margin-right:5px; text-decoration: overline; " >{!SalesQuote.gii__ShipToName__c}</p>
+        </div>
+    </div>
+</apex:page>
